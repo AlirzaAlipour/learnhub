@@ -1,0 +1,33 @@
+# Ignore virtual environments
+**/venv/
+**/env/
+**/.env
+**/env.bak
+
+# Ignore database files (e.g., SQLite)
+*.sqlite3
+*.db
+
+# Ignore migration files (Django specific)
+**/migrations/
+**/migrations/*.py
+**/migrations/*.pyc
+**/migrations/__init__.py
+
+# Ignore Python cache files
+**/__pycache__/
+*.py[cod]
+
+# Ignore IDE specific files
+*.idea/
+*.vscode/
+*.swp
+*.swo
+
+# Ignore logs and temp files
+*.log
+*.tmp
+*.temp
+
+# Ignore macOS specific files
+.DS_Store

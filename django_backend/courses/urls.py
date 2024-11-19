@@ -10,7 +10,7 @@ router.register(r'courses', views.CourseViewset)
 
 # Create a nested router for chapters
 courses_router = routers.NestedSimpleRouter(router, r'courses', lookup='course')
-courses_router.register(r'chapters', views.ChapterViewset, basename='course-chapters')
+courses_router.register(r'chapters', views.ChapterViewset, basename='course_chapters')
 
 urlpatterns = [
     path('', include(router.urls)),

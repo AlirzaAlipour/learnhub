@@ -32,6 +32,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include('courses.urls')),
+    path("", include('store.urls')),
     path("profiles/", include('accounts.urls')),
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.jwt')),

@@ -9,7 +9,7 @@ class Cart (models.Model):
     created_at = models.DateTimeField(auto_now_add=True) # Set on creation
     updated_at = models.DateTimeField(auto_now=True)
 
-class CartItem (models.model):
+class CartItem (models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 

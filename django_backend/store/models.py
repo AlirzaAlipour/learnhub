@@ -4,6 +4,7 @@ from accounts.models import User
 from uuid import uuid4
 
 class Cart (models.Model):
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True) # Set on creation
     updated_at = models.DateTimeField(auto_now=True)

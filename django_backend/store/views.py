@@ -6,6 +6,27 @@ class CartViewset (viewsets.ModelViewSet):
     queryset = models.Cart.objects.all()
     serializer_class = serializers.CartSerialiser
 
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(user=self.request.user)
+        else:
+            session_key = self.get_or_create_session_key(self.request)
+            serializer.save(session_key=session_key)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return models.Cart.objects.filter(user=self.request.user)
+        session_key = self.get_or_create_session_key(self.request)   # For anonymous users, return carts by session key
+        return models.Cart.objects.filter(session_key=session_key)
+
+    def get_or_create_session_key(self, request):
+        if not request.session.session_key:  # If no session exists, create one
+            request.session.create()
+        return request.session.session_key
+
+
 
 class CartItemViewset (viewsets.ModelViewSet):
     queryset = models.CartItem.objects.all()

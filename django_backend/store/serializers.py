@@ -4,8 +4,8 @@ from . import models
 class CartSerialiser (serializers.ModelSerializer):
     class Meta:
         model = models.Cart
-        fields = ['user', 'id', 'created_at', 'updated_at']
-        read_only_fields = ['user', 'id', 'created_at', 'updated_at']
+        fields = ['user', 'session_key', 'id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at','user', 'session_key',]
 
 class CartItemSerializer (serializers.ModelSerializer):
     class Meta:

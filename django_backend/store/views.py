@@ -1,6 +1,6 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
-from . import serializers, models
+from . import serializers, models, permissions as custom_permissions
 
 class CartViewset (viewsets.ModelViewSet):
     queryset = models.Cart.objects.all()
@@ -33,17 +33,60 @@ class CartItemViewset (viewsets.ModelViewSet):
     serializer_class = serializers.CartItemSerializer
     
     def get_queryset(self):
-        # Access the cart_id from the URL kwargs
         cart_id = self.kwargs['cart_pk']  # 'cart_pk' is the default name for the lookup in NestedDefaultRouter
         return models.CartItem.objects.filter(cart__id=cart_id)
     
     def create(self, request, cart_pk=None):
-    # Retrieve the cart using cart_pk
         cart = models.Cart.objects.get(id=cart_pk)
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            # Assign the cart instance to the serializer
-            serializer.save(cart=cart)  # This line associates the cart with the CartItem
+            serializer.save(cart=cart) 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class OrderViewset (viewsets.ModelViewSet):
+    queryset = models.Order.objects.all()
+    serializer_class = serializers.OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return models.Order.objects.filter(user = self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
+        return Response(serializer.data)
+    
+
+class OrderItemViewset (viewsets.ModelViewSet):
+    queryset = models.OrderItem.objects.all()
+    serializer_class = serializers.OrderItemSerializer
+    permission_classes = [permissions.IsAuthenticated,custom_permissions.IsOrderOwner]
+
+    def get_permissions(self):
+           if self.action in ['list', 'create']:
+               return [permissions.IsAuthenticated(), custom_permissions.IsOrderOwner() ]
+           return super().get_permissions()
+
+    def get_queryset(self):
+        order_id = self.kwargs['order_pk']
+        order = models.Order.objects.get(id=order_id)
+        self.check_object_permissions(self.request, order)
+        return models.OrderItem.objects.filter(order_id= order_id)
+
+
+    def create(self, request, *args, **kwargs):
+        order_id = self.kwargs['order_pk']
+        order = models.Order.objects.get(id=order_id)
+        self.check_object_permissions(self.request, order) # DRF automatically calls check_object_permissions on the object being returned by the serializer but i use Order
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+        def perform_create(self, serializer, order): 
+            serializer.save(order=order)
+        
+        

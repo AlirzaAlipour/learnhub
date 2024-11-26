@@ -15,3 +15,16 @@ class CartItemSerializer (serializers.ModelSerializer):
 
         
     
+class OrderSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = models.Order
+        fields = ['id','user', 'total_price', 'created_at', 'status']
+        read_only_fields = ['id', 'user', 'total_price', 'created_at', 'status']
+
+
+
+class OrderItemSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = models.OrderItem
+        fields = ['id','order', 'course', 'price_at_purchase']
+        read_only_fields = ['id','order', 'price_at_purchase']

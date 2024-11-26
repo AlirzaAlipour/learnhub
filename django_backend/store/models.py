@@ -26,11 +26,11 @@ class Order (models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    total_price = models.PositiveIntegerField(help_text="Price in toman (whole numbers only).")
+    total_price = models.PositiveIntegerField(null=True, blank=True , help_text="Price in toman (whole numbers only).")
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
 class OrderItem (models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    price_at_purchase = models.PositiveIntegerField(help_text="Price in toman (whole numbers only).")
+    price_at_purchase = models.PositiveIntegerField(null=True, blank=True ,help_text="Price in toman (whole numbers only).")

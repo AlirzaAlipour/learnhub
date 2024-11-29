@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from accounts.models import User
 from store.models import Order
-from .producer import RabbitMQPublisher
+from .producer import publisher
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
@@ -12,7 +12,7 @@ def create_profile(sender, instance, created, **kwargs):
             'username': instance.username
         }
         # Publish the message to RabbitMQ
-        RabbitMQPublisher.publish_event(message, 'user_creation')
+        publisher.publish_event(message, 'user_creation')
 
 @receiver(post_save, sender=Order)
 def create_order(sender, instance, created, **kwargs):
@@ -22,4 +22,4 @@ def create_order(sender, instance, created, **kwargs):
             'user_id': instance.user.id
         }
         # Publish the message to RabbitMQ
-        RabbitMQPublisher.publish_event(message, 'order_creation')
+        publisher.publish_event( message, 'order_creation')

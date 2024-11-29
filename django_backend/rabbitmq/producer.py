@@ -22,3 +22,4 @@ class RabbitMQPublisher:
     def close(self):
         self.connection.close()
 
+publisher = RabbitMQPublisher()

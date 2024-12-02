@@ -26,4 +26,3 @@ def verify_access_token(token: str = Depends(oauth2_scheme)) -> Optional[int]:
     
     return user_id
 
-

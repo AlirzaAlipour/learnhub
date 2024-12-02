@@ -31,6 +31,6 @@ class Order (models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
 class OrderItem (models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     price_at_purchase = models.PositiveIntegerField(null=True, blank=True ,help_text="Price in toman (whole numbers only).")

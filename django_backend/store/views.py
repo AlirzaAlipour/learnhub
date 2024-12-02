@@ -1,5 +1,7 @@
 from rest_framework import viewsets, status, permissions
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from . import serializers, models, permissions as custom_permissions
 
 class CartViewset (viewsets.ModelViewSet):
@@ -83,10 +85,20 @@ class OrderItemViewset (viewsets.ModelViewSet):
         self.check_object_permissions(self.request, order) # DRF automatically calls check_object_permissions on the object being returned by the serializer but i use Order
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid()
+        self.perform_create(serializer, order)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
-        def perform_create(self, serializer, order): 
-            serializer.save(order=order)
+    def perform_create(self, serializer, order):
+        # Save the OrderItem with the associated Order
+        serializer.save(order=order)
+
         
-        
+@api_view(['POST'])
+def order_payment(request, order_id):
+    order = get_object_or_404(models.Order, pk=order_id)
+    order.status = 'completed'  # Assuming 'completed' is a valid status
+    order.save()
+
+    return Response({"message": "Payment processed successfully, order status updated to completed."}, 
+                    status=status.HTTP_200_OK)

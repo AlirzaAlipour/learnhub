@@ -16,4 +16,5 @@ urlpatterns = [
     path(r'', include(router.urls)),
     path(r'', include(carts_router.urls)),
     path(r'', include(orders_router.urls)),
+    path('orders/<int:order_id>/payment/', views.order_payment, name='order-payment'),
 ]

@@ -148,7 +148,15 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+PRIVATE_KEY = os.getenv('PRIVATE_KEY')
+PUBLIC_KEY = os.getenv('PUBLIC_KEY')
+
+
 SIMPLE_JWT = {
-   'AUTH_HEADER_TYPES': ('JWT',),
-   'ACCESS_TOKEN_LIFETIME': timedelta(days=1)
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'SIGNING_KEY': PRIVATE_KEY,  # Use your private key for signing
+    'VERIFYING_KEY': PUBLIC_KEY,  # Use your public key for verification
+    'ALGORITHM': 'RS256',
 }

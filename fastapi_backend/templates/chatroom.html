@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+</head>
+<body>
+    <h1>Chat Room for Course ID: {{ course_id }}</h1>
+    <input type="text" id="messageInput" placeholder="Type a message...">
+    <button id="sendButton">Send</button>
+    <div id="messages"></div>
+
+    <script>
+        const courseId = "{{ course_id }}"; // Pass course_id from FastAPI
+        var token = "{{ token }}"; // Ensure this is set correctly
+        const socket = new WebSocket(`ws://localhost:8001/ws/${courseId}/?token=${token}`);
+        socket.onopen = () => {
+            console.log('WebSocket connection established');
+            socket.send('Hello Server!');
+        };
+        socket.onmessage = (event) => {
+            console.log('Message from server:', event.data);
+        };
+        socket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+        socket.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+        socket.onmessage = function(event) {
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += `<div>${event.data}</div>`;
+        };
+
+        document.getElementById("sendButton").onclick = function() {
+            const input = document.getElementById("messageInput");
+            socket.send(input.value);
+            input.value = '';
+        };
+    </script>
+</body>
+</html>
